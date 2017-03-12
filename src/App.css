@@ -1,0 +1,40 @@
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.note-lines {
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.score {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 300%;
+  color: white;
+}
+
+.controls {
+  position: absolute;
+  z-index: 1;
+  top: 20px;
+  left: 20px;
+  color: white;
+}
+
+.controls button {
+  display: block;
+  height: 4em;
+  width: 5em;
+  margin-bottom: 2em;
+}

@@ -1,0 +1,15 @@
+.note-line {
+  position: relative;
+}
+
+.note-line .note-line__line {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.note-line .note-line__hit {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
