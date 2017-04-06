@@ -1,11 +1,8 @@
-import {addPlayedNote} from './store/played-notes';
+const VELOCITY_THRESHOLD = 1;
 
-const VELOCITY_THRESHOLD = 10;
-
-export default function connectMidi(store, audioContext, samplePlayer) {
-  const play = function(noteType) {
-    samplePlayer.play(noteType);
-    store.dispatch(addPlayedNote(noteType, audioContext.currentTime));
+export default function connectMidi(audioContext, callback) {
+  const play = function(note) {
+    callback({time: audioContext.currentTime, note});
   };
 
   const onMidiMessage = function(event) {
@@ -20,9 +17,7 @@ export default function connectMidi(store, audioContext, samplePlayer) {
       return;
     }
 
-    console.log(note, velocity)
-
-    switch(note) {
+    switch (note) {
       case 36:
         play('kick');
         break;
@@ -47,32 +42,38 @@ export default function connectMidi(store, audioContext, samplePlayer) {
       default:
         break;
     }
-  }
+  };
 
   getMidiInput().then(
-    input => input.onmidimessage = onMidiMessage.bind(play),
+    input => {
+      if (input) {
+        input.onmidimessage = onMidiMessage.bind(play);
+      }
+    },
     error => console.log(error)
   );
 }
 
 function getMidiInput() {
   if (navigator.requestMIDIAccess) {
-    return navigator.requestMIDIAccess().then(
-      midiInterface => getInput(midiInterface),
-      error => console.log(error)
-    );
-  } else {
-    throw new Error("Web MIDI API not supported!");
+    return navigator
+      .requestMIDIAccess()
+      .then(
+        midiInterface => getInput(midiInterface),
+        error => console.log(error)
+      );
   }
+
+  throw new Error('Web MIDI API not supported!');
 }
 
 function getInput(midiInterface) {
   const inputs = [];
   const iterator = midiInterface.inputs.values();
-  for (var i = iterator.next(); i && !i.done; i = iterator.next()) {
+  for (let i = iterator.next(); i && !i.done; i = iterator.next()) {
     inputs.push(i.value);
   }
 
-  console.log("Midi Input: ", inputs[0]);
+  console.log('Midi Input: ', inputs[0]);
   return inputs[0];
 }

@@ -1,13 +1,10 @@
-import {addPlayedNote} from './store/played-notes';
-
-export default function connectKeyboard(store, audioContext, samplePlayer) {
-  const play = function(noteType) {
-    samplePlayer.play(noteType);
-    store.dispatch(addPlayedNote(noteType, audioContext.currentTime));
+export default function connectKeyboard(audioContext, callback) {
+  const play = function(note) {
+    callback({time: audioContext.currentTime, note});
   };
 
   document.body.addEventListener('keydown', event => {
-    switch(event.keyCode) {
+    switch (event.keyCode) {
       case 49:
         play('kick');
         break;

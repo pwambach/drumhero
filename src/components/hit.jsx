@@ -1,5 +1,4 @@
 import React from 'react';
-import './Hit.css';
 import classnames from 'classnames';
 
 const CIRCLE_RADIUS = 10;
@@ -26,16 +25,16 @@ export default class extends React.Component {
     }
   }
 
-
   render() {
     const {
       parentHeight,
       parentWidth,
       key,
       color = '#000',
-      className} = this.props;
+      className
+    } = this.props;
     const {hit, played} = this.state;
-    const radius = CIRCLE_RADIUS / 2
+    const radius = CIRCLE_RADIUS / 2;
     const totalWidth = CIRCLE_RADIUS * SCALE_FACTOR;
     const halfWidth = totalWidth / 2;
     const totalHeight = parentHeight + halfWidth;
@@ -44,26 +43,30 @@ export default class extends React.Component {
       {'hit-inner--highlight': hit},
       {'hit-inner--animate': played}
     );
-    const outerClasses = classnames(
-      'hit-outer',
-      {'hit-outer--animate': hit}
-    );
+    const outerClasses = classnames('hit-outer', {'hit-outer--animate': hit});
 
-    return <svg className={className}
-      key={key}
-      width={totalWidth}
-      height={totalHeight}
-      style={{transform: `translateX(${(totalWidth - parentWidth) / -2}px)`}}>
-      <circle className={outerClasses}
-        cx={halfWidth}
-        cy={parentHeight}
-        r={radius}
-        fill={color}/>
-      <circle className={innerClasses}
-        cx={halfWidth}
-        cy={parentHeight}
-        r={radius}
-        fill={color}/>
-    </svg>;
+    return (
+      <svg
+        className={className}
+        key={key}
+        width={totalWidth}
+        height={totalHeight}
+        style={{transform: `translateX(${(totalWidth - parentWidth) / -2}px)`}}>
+        <circle
+          className={outerClasses}
+          cx={halfWidth}
+          cy={parentHeight}
+          r={radius}
+          fill={color}
+        />
+        <circle
+          className={innerClasses}
+          cx={halfWidth}
+          cy={parentHeight}
+          r={radius}
+          fill={color}
+        />
+      </svg>
+    );
   }
 }

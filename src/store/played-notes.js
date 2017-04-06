@@ -1,3 +1,5 @@
+import {startTimeSelector} from './start-time';
+
 const inititalState = {
   kick: [],
   snare: [],
@@ -6,21 +8,27 @@ const inititalState = {
   tom2: [],
   tom3: [],
   cymbal1: []
-}
+};
 
 // action type
 export const ADD_PLAYED_NOTE = 'ADD_PLAYED_NOTE';
 export const CLEAR_PLAYED_NOTES = 'CLEAR_PLAYED_NOTES';
 
 // action creator
-export function addPlayedNote(noteType, contextTime) {
+export function addPlayedNote({time, note}) {
   return (dispatch, getState) => {
-    const state = getState();
-    const time = contextTime - state.startTime;
+    const startTime = startTimeSelector(getState());
+
+    // add note only when music is playing
+    if (!startTime) {
+      return;
+    }
+
+    const relativeTime = time - startTime;
     dispatch({
       type: ADD_PLAYED_NOTE,
-      noteType,
-      time
+      note,
+      time: relativeTime
     });
   };
 }
@@ -29,22 +37,16 @@ export function clearPlayedNotes() {
   return {
     type: CLEAR_PLAYED_NOTES
   };
-};
+}
 
 // reducer
 export function reducer(state = inititalState, action) {
   switch (action.type) {
     case ADD_PLAYED_NOTE:
-      const noteType = action.noteType;
-      const notes = state[noteType];
-
-      if (Array.isArray(notes)) {
-        const newNotes = [...state[noteType], action.time];
-        const newState = {...state, ...{[noteType]: newNotes}};
-        return newState;
-      }
-
-      return state;
+      const {note, time} = action;
+      const notes = state[note];
+      const newNotes = [...notes, time];
+      return {...state, ...{[note]: newNotes}};
 
     case CLEAR_PLAYED_NOTES:
       return inititalState;
@@ -52,4 +54,9 @@ export function reducer(state = inititalState, action) {
     default:
       return state;
   }
+}
+
+// selector
+export function playedNotesSelector(state) {
+  return state.playedNotes;
 }
